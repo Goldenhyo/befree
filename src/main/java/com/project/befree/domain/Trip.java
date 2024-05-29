@@ -1,6 +1,5 @@
 package com.project.befree.domain;
 
-import com.project.befree.dto.PlanRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
