@@ -28,6 +28,7 @@ logging:
     #시큐리티 관련 로그 남기기
 
 server:
+  port: 8085
   servlet:
     session:
       tracking-modes: cookie
