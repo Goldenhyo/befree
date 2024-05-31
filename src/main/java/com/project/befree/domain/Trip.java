@@ -1,12 +1,13 @@
 package com.project.befree.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,10 @@ public class Trip {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tid;
     private String ttitle;
-    private LocalDateTime tbegin;
-    private LocalDateTime tend;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate tbegin;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate tend;
     private String tregion;
 
     @ManyToOne

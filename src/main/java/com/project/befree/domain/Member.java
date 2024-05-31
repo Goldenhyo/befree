@@ -26,8 +26,6 @@ public class Member {
     private boolean status; // 0 = 탈퇴, 1 = 가입
     private boolean social;
 
-    @OneToMany
-    private List<Trip> trips;
 
     public void changeEmail(String email) {
         this.email = email;

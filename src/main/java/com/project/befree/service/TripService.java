@@ -3,6 +3,7 @@ package com.project.befree.service;
 import com.project.befree.domain.Place;
 import com.project.befree.domain.Trip;
 import com.project.befree.dto.PlanRequestDTO;
+import com.project.befree.dto.TripListResponseDTO;
 import com.project.befree.dto.TripRequestDTO;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface TripService {
     Long add(String email, TripRequestDTO tripRequestDTO);
 
-    List<Trip> list(String email);
+    TripListResponseDTO list(String email, int page);
 
     boolean delete(Long tid);
 

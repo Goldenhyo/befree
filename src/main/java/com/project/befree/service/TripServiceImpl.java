@@ -4,14 +4,18 @@ import com.project.befree.domain.Place;
 import com.project.befree.domain.Trip;
 import com.project.befree.domain.Member;
 import com.project.befree.dto.PlanRequestDTO;
+import com.project.befree.dto.TripListResponseDTO;
 import com.project.befree.dto.TripRequestDTO;
 import com.project.befree.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -38,9 +42,31 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
-    public List<Trip> list(String email) {
-        Member member = memberService.getOne(email);
-        return member.getTrips();
+    public TripListResponseDTO list(String email, int page) {
+        log.info("************* TripServiceImpl.java / method name : list / email : {}", email);
+        List<Trip> allTripByEmail = tripRepository.findAllByEmail(email);
+        Collections.reverse(allTripByEmail);
+
+        // 페이지네이션 적용
+        int fromIndex = (page - 1) * 5; // 페이지 index 구하기 / 첫페이지 : 0
+        int toIndex = Math.min(fromIndex + 5, allTripByEmail.size()); // 전체와 현재 페이지의 길이 비교 더 작은 값 남음
+
+        if (fromIndex > allTripByEmail.size()) {
+            return TripListResponseDTO.builder()
+                    .paginatedTrips(Collections.emptyList())
+                    .totalPage((allTripByEmail.size()+4)/5) // 페이지 수 계산
+                    .build(); // 페이지가 범위를 벗어나면 빈 리스트 반환
+        }
+
+        List<Trip> paginatedTrips = allTripByEmail.subList(fromIndex, toIndex);
+
+        TripListResponseDTO tripListResponseDTO = TripListResponseDTO.builder()
+                .paginatedTrips(paginatedTrips)
+                .totalPage((allTripByEmail.size()+4)/5) // 페이지 수 계산
+                .build();
+
+
+        return tripListResponseDTO;
     }
 
     @Override
