@@ -14,4 +14,5 @@ public class Place {
     private Long pid;
     private String contentId;
     private int days;
+    private String[] facilities;
 }
