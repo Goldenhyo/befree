@@ -49,9 +49,9 @@ public class TripController {
     }
 
     // 여행 상세 조회 (여행지 목록)
-    @GetMapping("/detail/{tid}")
-    public Map<String, List<Place>> readTripDetail(@PathVariable Long tid) {
-        List<Place> plan = tripService.getPlan(tid);
+    @GetMapping("/detail/{tid}/{page}")
+    public Map<String, List<Place>> readTripDetail(@PathVariable Long tid, @PathVariable Long page) {
+        List<Place> plan = tripService.getPlan(tid, page);
         log.info("************* TripController.java / method name : readTripDetail / plan : {}", plan);
         return Map.of("RESULT", plan);
     }
@@ -66,9 +66,11 @@ public class TripController {
 
     // 여행지 목록에 추가
     @PutMapping("/place/{tid}")
-    public void addPlace(@PathVariable Long tid, @RequestBody PlanRequestDTO planRequestDTO) {
-        boolean addPlace = tripService.addPlace(tid, planRequestDTO);
+    public Map<String, Boolean> addPlace(@PathVariable Long tid, @RequestBody List<Place> placeList) {
+        boolean addPlace = tripService.addPlace(tid, placeList);
         log.info("************* TripController.java / method name : addPlace / addPlace : {}", addPlace);
+
+        return Map.of("RESULT", addPlace);
     }
 
 

@@ -15,9 +15,9 @@ public interface TripService {
 
     boolean delete(Long tid);
 
-    List<Place> getPlan(Long tid);
+    List<Place> getPlan(Long tid , Long page);
 
     boolean putPlan(Long tid, PlanRequestDTO planRequestDTO);
 
-    boolean addPlace(Long tid, PlanRequestDTO planRequestDTO);
+    boolean addPlace(Long tid, List<Place> placeList);
 }

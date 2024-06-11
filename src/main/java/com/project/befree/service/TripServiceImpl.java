@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
@@ -81,12 +82,12 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
-    public List<Place> getPlan(Long tid) {
+    public List<Place> getPlan(Long tid, Long page) {
         Optional<Trip> tripOptional = tripRepository.findById(tid);
         if(tripOptional.isPresent()){
             Trip trip = tripOptional.get();
             log.info("************* TripServiceImpl.java / method name : getPlan / trip : {}", trip);
-            return trip.getPlaceList();
+            return trip.getPlaceList().stream().filter(p -> p.getDays() == page).toList();
         }else{
             log.info("************* TripServiceImpl.java / method name : getPlan / Plan return is null");
             return null;
@@ -107,19 +108,35 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
-    public boolean addPlace(Long tid, PlanRequestDTO planRequestDTO) {
+    public boolean addPlace(Long tid, List<Place> placeList) {
+        // trip 찾기
         Optional<Trip> tripOptional = tripRepository.findById(tid);
+        // 만약 Trip 을 찾았다면
         if(tripOptional.isPresent()){
             Trip trip = tripOptional.get();
             List<Place> originPlaceList = trip.getPlaceList();
 
             // Stream.of : 가변인자 받아 스트림 생성 (두 개) / flatMap : 각 요소를 매핑하고 하나로 합침 / (List::stream) : 각 리스트를 스트림으로 변환
-            List<Place> combinedPlaceList = Stream.of(originPlaceList, planRequestDTO.getPlanList())
+            // 기존 데이터에 새로운 데이터 추가
+            List<Place> combinedPlaceList = Stream.of(originPlaceList, placeList)
                     .flatMap(List::stream)
                     .toList();
 
+            List<Place> finalCombinedPlaceList = combinedPlaceList;
+            combinedPlaceList = IntStream.range(0, combinedPlaceList.size()) // IntStream은 특정 범위의 연속된 정수를 생성하는 스트림 0부터 combinedPlaceList.size()까지의 정수를 생성
+                    .mapToObj(i -> {
+                        Place place = finalCombinedPlaceList.get(i);
+                        place.changePid((long) i); // +1 if you want to start pid from 1
+                        return place;
+                    })
+                    .collect(Collectors.toList());
+
+
+            // 합쳐진 데이터 확인
             Trip replacedPlaceList = trip.replace(combinedPlaceList);
             log.info("************* TripServiceImpl.java / method name : addPlace / replacedPlaceList : {}", replacedPlaceList);
+
+            // 합쳐진 데이터 전송
             tripRepository.save(replacedPlaceList);
             return true;
         }else{
