@@ -8,9 +8,12 @@ import com.project.befree.util.CustomJWTException;
 import com.project.befree.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
 
@@ -38,6 +41,13 @@ public class MemberController {
                         true, false);
         Map<String, String> result = memberService.save(memberDTO);
         return result;
+    }
+
+    @PutMapping("/modify")
+    public Map<String, String> modify(@RequestBody MemberFormDTO memberFormDTO, Authentication authentication) {
+        log.info("******************** MemberController modify memberFormDTO:{}, authentication:{}", memberFormDTO, authentication);
+        memberService.modify(memberFormDTO);
+        return Map.of("result", "MODIFIED");
     }
 
     @GetMapping("/refresh")

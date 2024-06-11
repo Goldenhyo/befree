@@ -7,6 +7,7 @@ import com.project.befree.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public Member getOne(String email){
         Optional<Member> memberOptional = memberRepository.findById(email);
@@ -35,5 +37,14 @@ public class MemberServiceImpl implements MemberService{
         Member member = modelMapper.map(memberDTO, Member.class);
         Member saved = memberRepository.save(member);
         return Map.of("success", saved.getName());
+    }
+
+    @Override
+    public void modify(MemberFormDTO memberFormDTO) {
+        log.info("************MemberServiceImpl modify memberFormDTO:{}", memberFormDTO);
+        Member member = memberRepository.findById(memberFormDTO.getEmail()).orElseThrow();
+        member.changeEmail(memberFormDTO.getEmail());
+        member.changePassword(passwordEncoder.encode(memberFormDTO.getPassword()));
+        memberRepository.save(member);
     }
 }
