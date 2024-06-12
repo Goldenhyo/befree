@@ -12,5 +12,7 @@ public interface MemberService {
 
     Map<String, String> save(MemberDTO memberDTO);
 
-    void modify(MemberFormDTO memberFormDTO);
+    void delete(MemberDTO memberDTO, String memberEmail);
+
+    void modify(MemberDTO memberDTO, String memberEmail);
 }
