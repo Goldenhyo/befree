@@ -1,8 +1,6 @@
 package com.project.befree.controller;
 
 import com.project.befree.domain.Place;
-import com.project.befree.domain.Trip;
-import com.project.befree.dto.PlanRequestDTO;
 import com.project.befree.dto.TripListResponseDTO;
 import com.project.befree.dto.TripRequestDTO;
 import com.project.befree.service.TripService;
@@ -57,10 +55,10 @@ public class TripController {
     }
 
     // 여행 상세 수정 (순서 이동, 날짜 이동, 여행지 삭제)
-    @PutMapping("/detail/{tid}")
-    public Map<String, Boolean> updateTripDetail(@PathVariable Long tid, @RequestBody PlanRequestDTO planRequestDTO) {
-        boolean updateResult = tripService.putPlan(tid, planRequestDTO);
-        log.info("************* TripController.java / method name : updateTripDetail / updateResult : {}", updateResult);
+    @PutMapping("/{tid}")
+    public Map<String, Boolean> updateTripDetail(@PathVariable Long tid, @RequestBody List<List<Place>> planList) {
+        boolean updateResult = tripService.putPlan(tid, planList);
+        log.info("************* TripController.java / method name : updateTripDetail / updateResult : {}", planList);
         return Map.of("RESULT", updateResult);
     }
 
