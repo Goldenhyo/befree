@@ -18,17 +18,17 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public Member getOne(String email){
+    public Member getOne(String email) {
         Optional<Member> memberOptional = memberRepository.findById(email);
-        if(memberOptional.isPresent()) {
+        if (memberOptional.isPresent()) {
             return memberOptional.get();
-        }else{
+        } else {
             return null;
         }
     }
@@ -40,11 +40,18 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void modify(MemberFormDTO memberFormDTO) {
-        log.info("************MemberServiceImpl modify memberFormDTO:{}", memberFormDTO);
-        Member member = memberRepository.findById(memberFormDTO.getEmail()).orElseThrow();
-        member.changeEmail(memberFormDTO.getEmail());
-        member.changePassword(passwordEncoder.encode(memberFormDTO.getPassword()));
+    public void delete(MemberDTO memberDTO, String memberEmail) {
+        log.info("************MemberServiceImpl delete memberFormDTO:{}", memberDTO);
+        Member member = memberRepository.findById(memberEmail).orElseThrow();
+        member.changeStatus((Boolean) memberDTO.getClaims().get("status"));
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void modify(MemberDTO memberDTO, String memberEmail) {
+        log.info("************MemberServiceImpl modify memberFormDTO:{}", memberDTO);
+        Member member = memberRepository.findById(memberEmail).orElseThrow();
+        member.changePassword(memberDTO.getPassword());
         memberRepository.save(member);
     }
 }

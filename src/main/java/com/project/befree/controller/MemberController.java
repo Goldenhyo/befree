@@ -3,17 +3,15 @@ package com.project.befree.controller;
 import com.project.befree.domain.Member;
 import com.project.befree.dto.MemberDTO;
 import com.project.befree.dto.MemberFormDTO;
+import com.project.befree.dto.MemberConfirmDTO;
 import com.project.befree.service.MemberService;
 import com.project.befree.util.CustomJWTException;
 import com.project.befree.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
 
@@ -43,11 +41,47 @@ public class MemberController {
         return result;
     }
 
+    @PutMapping("/confirm")
+    public String confirm(@RequestBody MemberConfirmDTO dto, @RequestHeader("Authorization") String authHeader) {
+        String accessToken = authHeader.substring(7);
+        Map<String, Object> claims = jwtUtil.validateToken(accessToken);
+        log.info("******************* MemberController confirm dto:{}", dto);
+        String memberEmail = (String) claims.get("email");
+        Member findMember = memberService.getOne(memberEmail);
+        if (findMember == null) {
+            return "fail";
+        } 
+        if (passwordEncoder.matches(dto.getPassword(), findMember.getPassword())) {
+            if (dto.getResult().equals("delete")) {
+                MemberDTO memberDTO =
+                        new MemberDTO(memberEmail,
+                                passwordEncoder.encode(dto.getPassword()),
+                                (String) claims.get("name"),
+                                false, false);
+                memberService.delete(memberDTO, memberEmail);
+                log.info("-----------탈퇴완료");
+            }
+            log.info("-----------------비밀번호 일치");
+            return "success";
+        }
+        log.info("실패");
+        return "fail";
+    }
+
     @PutMapping("/modify")
-    public Map<String, String> modify(@RequestBody MemberFormDTO memberFormDTO, Authentication authentication) {
-        log.info("******************** MemberController modify memberFormDTO:{}, authentication:{}", memberFormDTO, authentication);
-        memberService.modify(memberFormDTO);
-        return Map.of("result", "MODIFIED");
+    public String modify(@RequestBody MemberConfirmDTO dto, @RequestHeader("Authorization") String authHeader) {
+        log.info("**************MemberController modify dto:{}", dto);
+        String accessToken = authHeader.substring(7);
+        Map<String, Object> claims = jwtUtil.validateToken(accessToken);
+        String memberEmail = (String) claims.get("email");
+        log.info("**************MemberController modify memberEmail:{}", memberEmail);
+        MemberDTO memberDTO =
+                new MemberDTO(memberEmail,
+                        passwordEncoder.encode(dto.getPassword()),
+                        (String) claims.get("name"),
+                        true, false);
+        memberService.modify(memberDTO, memberEmail);
+        return "haha";
     }
 
     @GetMapping("/refresh")
