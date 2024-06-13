@@ -4,6 +4,19 @@ spring:
     url: jdbc:mysql://localhost:3306/befree?useUnicode=true&characterEncoding=UTF-8&characterSetResult=UTF-8&useSSL=true
     username: root
     password: 1234
+  mail:
+    host: smtp.gmail.com # SMTP 서버 호스트
+    port: 587 # SMTP 서버 포트
+    username: wjs010515@gmail.com # SMTP 서버 로그인 아이디 (발신자)
+    password: jnso pegu pcxe vlqq # SMTP 서버 로그인 패스워드 (앱 비밀번호)
+    properties:
+      mail:
+        smtp:
+          timeout: 18000
+          writetimeout: 18000
+          auth: true # 사용자 인증 시도 여부 (기본값 : false)
+          starttls:
+            enable: true # StartTLS 활성화 여부 (기본값 : false)
 
   jpa:
     database: mysql
@@ -35,3 +48,4 @@ server:
 
 jwt:
   key: SGVsbG9Kc29uV2ViVG9rZW5BdXRoZW50aWNhdGlvbktleVdpdGhTcHJpbmdCb29rUHJvamVjdFNlY3JldEtleQ
+
