@@ -92,44 +92,6 @@ public class MemberController {
         return "haha";
     }
 
-//    @PostMapping("/email")
-//    public Map<String, String> email(@RequestBody String email) {
-//        log.info("************************** MemberController email:{}", email);
-//        Map map = new HashMap<>();
-//        Member findMember = memberService.getOne(email);
-//
-//        if (findMember != null) {
-//            map.put("exist", "이미 존재하는 이메일입니다.");
-//        } else {
-//            Random random = new Random(); // 난수 생성을 위한 랜덤 클래스
-//            StringBuilder key = new StringBuilder(); // 인증번호 담을 String key 변수 생성
-//
-//            // 입력 키를 위한 난수 생성 코드
-//            for (int i = 0; i < 6; i++) {
-//                int numIndex = random.nextInt(10);
-//                key.append(numIndex);
-//            }
-//
-//            log.info("*****************MAIL key:{}", key);
-//
-//            String mailContent = "\n BeFree 회원가입 이메일 인증.";
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setTo(email); // 스크립트에서 보낸 메일을 받을 사용자 이메일 주소
-//            message.setSubject("회원가입을 위한 이메일 인증번호 메일입니다."); // 이메일 제목
-//            message.setText("인증번호는 " + key + " 입니다." + mailContent); // 이메일 내용
-//
-//            try {
-//                javaMailSender.send(message);
-//            } catch (Exception e) {
-//                log.error("Failed to send email", e);
-//                map.put("error", "이메일 전송에 실패했습니다.");
-//                return map;
-//            }
-//            map.put("key", key.toString());
-//        }
-//        return map;
-//    }
-
     @PostMapping("/email")
     public Map<String, String> sendEmail(@RequestBody String str) {
         String str2 = str.substring(9);
@@ -137,13 +99,38 @@ public class MemberController {
         log.info("************ MemberController sendEmail:{}", email);
         EmailMsgDTO emailMessage = EmailMsgDTO.builder()
                 .to(email)
-                .subject("테스트메일")
-                .message("비밀번호 재설정을 위한 이메일입니다.")
+                .subject("BeFree 테스트메일")
+                .message("이메일 인증을 위한 이메일입니다.")
                 .build();
         Map<String, String> result = emailService.sendMail(emailMessage);
         String key = result.get("key");
         log.info("*********************이메일인증번호:{}", key);
         return Map.of("key", key);
+    }
+
+    @PostMapping("/password")
+    public String newPassword(@RequestBody String str) {
+        log.info("************ MemberController newPassword:{}", str);
+        String str2 = str.substring(9);
+        String email = str2.split("\"")[1];
+        Member findMember = memberService.getOne(email);
+        if (findMember == null) {
+            return "fail";
+        }
+        EmailMsgDTO emailMessage = EmailMsgDTO.builder()
+                .to(email)
+                .subject("BeFree 테스트메일")
+                .build();
+        Map<String, String> result = emailService.sendMail(emailMessage);
+        String newPw = result.get("key");
+
+        MemberDTO memberDTO =
+                new MemberDTO(email,
+                        passwordEncoder.encode(newPw),
+                        findMember.getName(),
+                        findMember.isStatus(), false);
+        memberService.modify(memberDTO, email);
+        return "success";
     }
 
     @GetMapping("/refresh")
