@@ -3,7 +3,6 @@ package com.project.befree.service;
 import com.project.befree.domain.Place;
 import com.project.befree.domain.Trip;
 import com.project.befree.domain.Member;
-import com.project.befree.dto.PlanRequestDTO;
 import com.project.befree.dto.TripListResponseDTO;
 import com.project.befree.dto.TripRequestDTO;
 import com.project.befree.repository.TripRepository;
@@ -11,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.time.Period;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -95,17 +93,34 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
-    public boolean putPlan(Long tid, PlanRequestDTO planRequestDTO) {
+    public boolean putPlan(Long tid, List<List<Place>> placeList) {
+        // tid로 trip 찾기
         Optional<Trip> tripOptional = tripRepository.findById(tid);
+        int dayLength = tripOptional.map(trip -> Period.between(trip.getTbegin(), trip.getTend()).getDays() + 1).orElse(0);
+
         if(tripOptional.isPresent()){
-            Trip newTrip = tripOptional.get().replace(planRequestDTO.getPlanList());
-            tripRepository.save(newTrip);
+            Trip trip = tripOptional.get();
+            List<Place> originPlaceList = trip.getPlaceList();
+
+            for (int i = 0; i < placeList.size(); i++) {
+                List<Place> dayPlaces = placeList.get(i);
+                if (!dayPlaces.isEmpty()) {
+                    // 해당 날짜의 장소 삭제
+                    int index = i;
+                    originPlaceList.removeIf(place -> place.getDays() == (index + 1));
+                    // 새로운 장소 추가
+                    originPlaceList.addAll(dayPlaces);
+                }
+            }
+            // trip 업데이트
+            tripRepository.save(trip);
             return true;
-        }else{
+        } else {
             log.info("************* TripServiceImpl.java / method name : patchPlan / tripOptional : Trip return is null");
             return false;
         }
     }
+
 
     @Override
     public boolean addPlace(Long tid, List<Place> placeList) {
@@ -123,10 +138,15 @@ public class TripServiceImpl implements TripService{
                     .toList();
 
             List<Place> finalCombinedPlaceList = combinedPlaceList;
+            AtomicInteger notDayOne = new AtomicInteger();
             combinedPlaceList = IntStream.range(0, combinedPlaceList.size()) // IntStream은 특정 범위의 연속된 정수를 생성하는 스트림 0부터 combinedPlaceList.size()까지의 정수를 생성
                     .mapToObj(i -> {
                         Place place = finalCombinedPlaceList.get(i);
-                        place.changePid((long) i); // +1 if you want to start pid from 1
+                        if(place.getDays() == 1){
+                            place.changePid((long) i - notDayOne.get()); // +1 if you want to start pid from 1
+                        }else{
+                            notDayOne.getAndIncrement();
+                        }
                         return place;
                     })
                     .collect(Collectors.toList());

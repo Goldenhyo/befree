@@ -1,8 +1,6 @@
 package com.project.befree.service;
 
 import com.project.befree.domain.Place;
-import com.project.befree.domain.Trip;
-import com.project.befree.dto.PlanRequestDTO;
 import com.project.befree.dto.TripListResponseDTO;
 import com.project.befree.dto.TripRequestDTO;
 
@@ -17,7 +15,7 @@ public interface TripService {
 
     List<Place> getPlan(Long tid , Long page);
 
-    boolean putPlan(Long tid, PlanRequestDTO planRequestDTO);
+    boolean putPlan(Long tid, List<List<Place>> placeList);
 
     boolean addPlace(Long tid, List<Place> placeList);
 }
