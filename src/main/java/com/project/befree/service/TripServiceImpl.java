@@ -85,7 +85,10 @@ public class TripServiceImpl implements TripService{
         if(tripOptional.isPresent()){
             Trip trip = tripOptional.get();
             log.info("************* TripServiceImpl.java / method name : getPlan / trip : {}", trip);
-            return trip.getPlaceList().stream().filter(p -> p.getDays() == page).toList();
+            return trip.getPlaceList().stream().filter(p -> {
+                p.setFacilities(p.getFacilities());
+                return p.getDays() == page;
+            }).toList();
         }else{
             log.info("************* TripServiceImpl.java / method name : getPlan / Plan return is null");
             return null;
