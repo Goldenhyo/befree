@@ -9,6 +9,8 @@ import java.util.List;
 public interface TripService {
     Long add(String email, TripRequestDTO tripRequestDTO);
 
+    Boolean put(String email, TripRequestDTO tripRequestDTO, Long tid);
+
     TripListResponseDTO list(String email, int page);
 
     boolean delete(Long tid);

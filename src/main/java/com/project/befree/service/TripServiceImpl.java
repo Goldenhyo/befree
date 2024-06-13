@@ -41,6 +41,21 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
+    public Boolean put(String email, TripRequestDTO tripRequestDTO, Long tid) {
+
+        Optional<Trip> tripOptional = tripRepository.findById(tid);
+
+        if(tripOptional.isPresent()){
+            Trip trip = tripOptional.get();
+            trip.replaceInfo(tripRequestDTO);
+            tripRepository.save(trip);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
     public TripListResponseDTO list(String email, int page) {
         log.info("************* TripServiceImpl.java / method name : list / email : {}", email);
         List<Trip> allTripByEmail = tripRepository.findAllByEmail(email);
@@ -96,7 +111,6 @@ public class TripServiceImpl implements TripService{
     public boolean putPlan(Long tid, List<List<Place>> placeList) {
         // tid로 trip 찾기
         Optional<Trip> tripOptional = tripRepository.findById(tid);
-        int dayLength = tripOptional.map(trip -> Period.between(trip.getTbegin(), trip.getTend()).getDays() + 1).orElse(0);
 
         if(tripOptional.isPresent()){
             Trip trip = tripOptional.get();
@@ -153,7 +167,7 @@ public class TripServiceImpl implements TripService{
 
 
             // 합쳐진 데이터 확인
-            Trip replacedPlaceList = trip.replace(combinedPlaceList);
+            Trip replacedPlaceList = trip.replacePlace(combinedPlaceList);
             log.info("************* TripServiceImpl.java / method name : addPlace / replacedPlaceList : {}", replacedPlaceList);
 
             // 합쳐진 데이터 전송
