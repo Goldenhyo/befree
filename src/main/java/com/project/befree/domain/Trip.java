@@ -1,6 +1,7 @@
 package com.project.befree.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.befree.dto.TripRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +35,17 @@ public class Trip {
     @Builder.Default
     private List<Place> placeList = new ArrayList<>();
 
-    public Trip replace(List<Place> planList){
+    public Trip replacePlace(List<Place> planList){
         this.getPlaceList().clear();
         this.getPlaceList().addAll(planList);
+        return this;
+    }
+
+    public Trip replaceInfo(TripRequestDTO tripRequestDTO){
+        this.ttitle = tripRequestDTO.getTtitle();
+        this.tbegin = tripRequestDTO.getTbegin();
+        this.tend = tripRequestDTO.getTend();
+        this.tregion = tripRequestDTO.getTregion();
         return this;
     }
 }

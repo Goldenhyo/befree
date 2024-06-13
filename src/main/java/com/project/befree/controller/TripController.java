@@ -28,6 +28,15 @@ public class TripController {
         return Map.of("RESULT", tid);
     }
 
+    // 여행 수정 (제목, 기간, 지역)
+    @PutMapping("/{email}/{tid}")
+    public Map<String, Boolean> updateTrip(@PathVariable String email, @PathVariable Long tid, @RequestBody TripRequestDTO tripRequestDTO) {
+        log.info("************* TripController.java / method name : updateTrip / tripRequestDTO : {}", tripRequestDTO);
+        Boolean isSuccess = tripService.put(email, tripRequestDTO, tid);
+        log.info("************* TripController.java / method name : updateTrip / tid : {}", tid);
+        return Map.of("RESULT", isSuccess);
+    }
+
     // 여행 목록 조회
     @GetMapping("/{email}/{page}")
     public Map<String, TripListResponseDTO> readTrip(@PathVariable String email, @PathVariable int page) {
