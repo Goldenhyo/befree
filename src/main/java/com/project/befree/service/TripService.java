@@ -11,7 +11,11 @@ public interface TripService {
 
     Boolean put(String email, TripRequestDTO tripRequestDTO, Long tid);
 
+    Boolean share(String email, Long tid);
+
     TripListResponseDTO list(String email, int page);
+
+    TripListResponseDTO sharedList(int page);
 
     boolean delete(Long tid);
 

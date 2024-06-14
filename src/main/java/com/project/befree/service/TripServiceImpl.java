@@ -56,6 +56,21 @@ public class TripServiceImpl implements TripService{
     }
 
     @Override
+    public Boolean share(String email, Long tid) {
+
+        Optional<Trip> tripOptional = tripRepository.findById(tid);
+
+        if(tripOptional.isPresent()){
+            Trip trip = tripOptional.get();
+            trip.changeShared(true);
+            tripRepository.save(trip);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
     public TripListResponseDTO list(String email, int page) {
         log.info("************* TripServiceImpl.java / method name : list / email : {}", email);
         List<Trip> allTripByEmail = tripRepository.findAllByEmail(email);
@@ -79,6 +94,31 @@ public class TripServiceImpl implements TripService{
                 .totalPage((allTripByEmail.size()+4)/5) // 페이지 수 계산
                 .build();
 
+        return tripListResponseDTO;
+    }
+
+    @Override
+    public TripListResponseDTO sharedList(int page) {
+        List<Trip> allBySharedIsTrue = tripRepository.findAllBySharedIsTrue();
+        Collections.reverse(allBySharedIsTrue);
+
+        // 페이지네이션 적용
+        int fromIndex = (page - 1) * 5; // 페이지 index 구하기 / 첫페이지 : 0
+        int toIndex = Math.min(fromIndex + 5, allBySharedIsTrue.size()); // 전체와 현재 페이지의 길이 비교 더 작은 값 남음
+
+        if (fromIndex > allBySharedIsTrue.size()) {
+            return TripListResponseDTO.builder()
+                    .paginatedTrips(Collections.emptyList())
+                    .totalPage((allBySharedIsTrue.size()+4)/5) // 페이지 수 계산
+                    .build(); // 페이지가 범위를 벗어나면 빈 리스트 반환
+        }
+
+        List<Trip> paginatedTrips = allBySharedIsTrue.subList(fromIndex, toIndex);
+
+        TripListResponseDTO tripListResponseDTO = TripListResponseDTO.builder()
+                .paginatedTrips(paginatedTrips)
+                .totalPage((allBySharedIsTrue.size()+4)/5) // 페이지 수 계산
+                .build();
 
         return tripListResponseDTO;
     }

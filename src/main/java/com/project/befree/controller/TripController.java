@@ -37,6 +37,14 @@ public class TripController {
         return Map.of("RESULT", isSuccess);
     }
 
+    // 여행 공유하기
+    @PutMapping("/{email}/{tid}/share")
+    public Map<String, Boolean> shareTrip(@PathVariable String email, @PathVariable Long tid) {
+        log.info("************* TripController.java / method name : updateTrip / email :{} tid : {}", email, tid);
+        Boolean share = tripService.share(email, tid);
+        return Map.of("RESULT", share);
+    }
+
     // 여행 목록 조회
     @GetMapping("/{email}/{page}")
     public Map<String, TripListResponseDTO> readTrip(@PathVariable String email, @PathVariable int page) {
@@ -44,6 +52,15 @@ public class TripController {
         log.info("************* TripController.java / method name : readTrip / page : {}", page);
         TripListResponseDTO tripListResponseDTO = tripService.list(email, page);
         log.info("************* TripController.java / method name : readTrip / list : {}", tripListResponseDTO);
+        return Map.of("RESULT", tripListResponseDTO);
+    }
+
+    // 공유된 여행 목록 조회
+    @GetMapping("/sharedList/{page}")
+    public Map<String, TripListResponseDTO> getSharedTrip(@PathVariable int page) {
+        log.info("************* TripController.java / method name : getSharedTrip / page : {}", page);
+        TripListResponseDTO tripListResponseDTO = tripService.sharedList(page);
+        log.info("************* TripController.java / method name : getSharedTrip / list : {}", tripListResponseDTO);
         return Map.of("RESULT", tripListResponseDTO);
     }
 

@@ -28,6 +28,8 @@ public class Trip {
     private LocalDate tend;
     private String tregion;
 
+    private boolean shared;
+
     @ManyToOne
     private Member member;
 
@@ -47,5 +49,9 @@ public class Trip {
         this.tend = tripRequestDTO.getTend();
         this.tregion = tripRequestDTO.getTregion();
         return this;
+    }
+
+    public void changeShared(boolean shared){
+        this.shared = shared;
     }
 }

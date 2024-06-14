@@ -15,4 +15,6 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     @Query("select t from Trip t where t.member.email = :email")
     List<Trip> findAllByEmail(@Param("email") String email);
 
+    List<Trip> findAllBySharedIsTrue();
+
 }
