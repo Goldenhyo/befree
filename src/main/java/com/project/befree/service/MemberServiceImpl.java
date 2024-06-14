@@ -41,11 +41,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void delete(MemberDTO memberDTO, String memberEmail) {
-        log.info("************MemberServiceImpl delete memberFormDTO:{}", memberDTO);
+        log.info("************MemberServiceImpl delete memberDTO:{}", memberDTO);
         Member member = memberRepository.findById(memberEmail).orElseThrow();
         member.changeStatus((Boolean) memberDTO.getClaims().get("status"));
-        memberRepository.save(member);
+        memberRepository.updateMemberEmail(memberEmail, "deleted member");
+        log.info("************************member:{}", member);
     }
+
 
     @Override
     public void modify(MemberDTO memberDTO, String memberEmail) {

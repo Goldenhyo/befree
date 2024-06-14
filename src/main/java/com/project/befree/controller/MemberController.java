@@ -97,25 +97,32 @@ public class MemberController {
         String str2 = str.substring(9);
         String email = str2.split("\"")[1];
         log.info("************ MemberController sendEmail:{}", email);
-        EmailMsgDTO emailMessage = EmailMsgDTO.builder()
-                .to(email)
-                .subject("BeFree 테스트메일")
-                .message("이메일 인증을 위한 이메일입니다.")
-                .build();
-        Map<String, String> result = emailService.sendMail(emailMessage);
-        String key = result.get("key");
-        log.info("*********************이메일인증번호:{}", key);
-        return Map.of("key", key);
+        Member findMember = memberService.getOne(email);
+        if (findMember == null) {
+            EmailMsgDTO emailMessage = EmailMsgDTO.builder()
+                    .to(email)
+                    .subject("BeFree 테스트메일")
+                    .message("이메일 인증을 위한 이메일입니다.")
+                    .build();
+            Map<String, String> result = emailService.sendMail(emailMessage);
+            String key = result.get("key");
+            log.info("*********************이메일인증번호:{}", key);
+            return Map.of("key", key);
+        } else {
+            log.info("**************** 이미 가입된 회원임");
+            return Map.of("fail", "fail");
+        }
     }
 
     @PostMapping("/password")
-    public String newPassword(@RequestBody String str) {
-        log.info("************ MemberController newPassword:{}", str);
+    public Boolean newPassword(@RequestBody String str) {
         String str2 = str.substring(9);
         String email = str2.split("\"")[1];
+        log.info("************ MemberController newPassword email:{}", email);
         Member findMember = memberService.getOne(email);
+        log.info("************ MemberController newPassword findMember:{}", findMember);
         if (findMember == null) {
-            return "fail";
+            return false;
         }
         EmailMsgDTO emailMessage = EmailMsgDTO.builder()
                 .to(email)
@@ -130,7 +137,7 @@ public class MemberController {
                         findMember.getName(),
                         findMember.isStatus(), false);
         memberService.modify(memberDTO, email);
-        return "success";
+        return true;
     }
 
     @GetMapping("/refresh")
