@@ -21,23 +21,9 @@ public class Member {
     private String email;
     private String password;
     private String name;
-    private boolean status; // 0 = 탈퇴, 1 = 가입
-    private boolean social;
-
-
-    public void changeEmail(String email) {
-        this.email = email;
-    }
 
     public void changePassword(String password) {
         this.password = password;
     }
 
-    public void changeStatus(boolean status) {
-        this.status = status;
-    }
-
-    public void changeSocial(boolean social) {
-        this.social = social;
-    }
 }

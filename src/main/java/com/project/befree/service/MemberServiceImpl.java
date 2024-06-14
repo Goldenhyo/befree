@@ -43,7 +43,6 @@ public class MemberServiceImpl implements MemberService {
     public void delete(MemberDTO memberDTO, String memberEmail) {
         log.info("************MemberServiceImpl delete memberDTO:{}", memberDTO);
         Member member = memberRepository.findById(memberEmail).orElseThrow();
-        member.changeStatus((Boolean) memberDTO.getClaims().get("status"));
         memberRepository.updateMemberEmail(memberEmail, "deleted member");
         log.info("************************member:{}", member);
     }

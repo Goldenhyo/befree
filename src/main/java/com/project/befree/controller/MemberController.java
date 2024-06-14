@@ -43,8 +43,7 @@ public class MemberController {
         MemberDTO memberDTO =
                 new MemberDTO(memberFormDTO.getEmail(),
                         passwordEncoder.encode(memberFormDTO.getPassword()),
-                        memberFormDTO.getName(),
-                        true, false);
+                        memberFormDTO.getName());
         Map<String, String> result = memberService.save(memberDTO);
         return result;
     }
@@ -64,8 +63,7 @@ public class MemberController {
                 MemberDTO memberDTO =
                         new MemberDTO(memberEmail,
                                 passwordEncoder.encode(dto.getPassword()),
-                                (String) claims.get("name"),
-                                false, false);
+                                (String) claims.get("name"));
                 memberService.delete(memberDTO, memberEmail);
                 log.info("-----------탈퇴완료");
             }
@@ -86,8 +84,7 @@ public class MemberController {
         MemberDTO memberDTO =
                 new MemberDTO(memberEmail,
                         passwordEncoder.encode(dto.getPassword()),
-                        (String) claims.get("name"),
-                        true, false);
+                        (String) claims.get("name"));
         memberService.modify(memberDTO, memberEmail);
         return "haha";
     }
@@ -134,8 +131,7 @@ public class MemberController {
         MemberDTO memberDTO =
                 new MemberDTO(email,
                         passwordEncoder.encode(newPw),
-                        findMember.getName(),
-                        findMember.isStatus(), false);
+                        findMember.getName());
         memberService.modify(memberDTO, email);
         return true;
     }

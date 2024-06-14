@@ -26,7 +26,6 @@ class MemberRepositoryTest {
                     .email("user" + i + "@test.com")
                     .password(passwordEncoder.encode("123"))
                     .name("유저"+i)
-                    .status(true)
                     .build();
             memberRepository.save(member);
         }

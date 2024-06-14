@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw  new UsernameNotFoundException("No Match Email");
         }
         MemberDTO memberDTO
-                = new MemberDTO(member.getEmail(), member.getPassword(), member.getName(), member.isStatus(), member.isSocial() );
+                = new MemberDTO(member.getEmail(), member.getPassword(), member.getName() );
         return memberDTO;
     }
 }

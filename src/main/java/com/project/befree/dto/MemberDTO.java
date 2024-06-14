@@ -12,16 +12,12 @@ public class MemberDTO extends User {
     private String email;
     private String password;
     private String name;
-    private boolean status;
-    private boolean social;
 
-    public MemberDTO(String email, String password,  String name, boolean status, boolean social) {
+    public MemberDTO(String email, String password,  String name) {
         super(email, password, new ArrayList<>());
         this.email = email;
         this.password = password;
         this.name = name;
-        this.status = status;
-        this.social = social;
     }
 
     // 현재 사용자 정보를 Map 타입으로 리턴 (JWT 위한 메서드, 추후 JWT 문자열 생성시 사용)
@@ -30,8 +26,6 @@ public class MemberDTO extends User {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
         map.put("name", name);
-        map.put("status", status);
-        map.put("social", social);
         return map;
     }
 }
