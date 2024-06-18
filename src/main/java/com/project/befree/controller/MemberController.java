@@ -98,8 +98,7 @@ public class MemberController {
         if (findMember == null) {
             EmailMsgDTO emailMessage = EmailMsgDTO.builder()
                     .to(email)
-                    .subject("BeFree 테스트메일")
-                    .message("이메일 인증을 위한 이메일입니다.")
+                    .subject("BeFree 이메일 인증")
                     .build();
             Map<String, String> result = emailService.sendMail(emailMessage);
             String key = result.get("key");
@@ -123,7 +122,7 @@ public class MemberController {
         }
         EmailMsgDTO emailMessage = EmailMsgDTO.builder()
                 .to(email)
-                .subject("BeFree 테스트메일")
+                .subject("BeFree 비밀번호 변경")
                 .build();
         Map<String, String> result = emailService.sendMail(emailMessage);
         String newPw = result.get("key");
