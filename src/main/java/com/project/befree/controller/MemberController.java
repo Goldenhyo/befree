@@ -103,7 +103,7 @@ public class MemberController {
             Map<String, String> result = emailService.sendMail(emailMessage);
             String key = result.get("key");
             log.info("*********************이메일인증번호:{}", key);
-            return Map.of("key", key);
+            return Map.of("key", key, "email", email);
         } else {
             log.info("**************** 이미 가입된 회원임");
             return Map.of("fail", "fail");
