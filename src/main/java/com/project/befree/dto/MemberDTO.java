@@ -1,12 +1,11 @@
 package com.project.befree.dto;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.project.befree.domain.Member;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Slf4j
 public class MemberDTO extends User {
 
     private String email;
@@ -28,4 +27,6 @@ public class MemberDTO extends User {
         map.put("name", name);
         return map;
     }
+
+
 }

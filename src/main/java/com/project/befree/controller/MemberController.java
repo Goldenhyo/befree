@@ -48,6 +48,19 @@ public class MemberController {
         return result;
     }
 
+    @GetMapping("/kakao")
+    public Map<String, Object> getMemberFromKakao(String accessToken) {
+        log.info("********** MemberController getMemberFromKakao - accessToken:{}", accessToken);
+        MemberDTO kakaoMember = memberService.getKakaoMember(accessToken);
+        Map<String, Object> claims = kakaoMember.getClaims();
+        log.info("********** MemberController claims:{}", claims);
+        String jwtAccessToken = jwtUtil.generateToken(claims, 10);
+        String jwtRefreshToken = jwtUtil.generateToken(claims, 60 * 24);
+        claims.put("accessToken", jwtAccessToken);
+        claims.put("refreshToken", jwtRefreshToken);
+        return claims;
+    }
+
     @PutMapping("/confirm")
     public String confirm(@RequestBody MemberConfirmDTO dto, @RequestHeader("Authorization") String authHeader) {
         String accessToken = authHeader.substring(7);
