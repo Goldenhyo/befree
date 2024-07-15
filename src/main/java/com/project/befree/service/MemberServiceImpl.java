@@ -80,6 +80,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(tmpPassword))
+                .social(true)
                 .build();
         return member;
     }
@@ -144,7 +145,8 @@ public class MemberServiceImpl implements MemberService {
         MemberDTO memberDTO = new MemberDTO(
                 member.getEmail(),
                 member.getPassword(),
-                member.getName());
+                member.getName(),
+                member.isSocial());
         return memberDTO;
     }
 }

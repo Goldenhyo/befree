@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,12 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 이메일로 회원 조회하고 MemberDTO 리턴, 일치하는 이메일 없으면 예외 발생 시키기
         log.info("********** CustomUserDetailsService - loadUserByUsername - username:{}", username);
-        Member member = memberRepository.findById(username).orElseThrow();
-        if (member == null) {
-            throw  new UsernameNotFoundException("No Match Email");
+        Optional<Member> findMember = memberRepository.findById(username);
+        if (findMember.isEmpty()) {
+            throw new UsernameNotFoundException("No Match Email");
         }
+        Member member = findMember.get();
         MemberDTO memberDTO
-                = new MemberDTO(member.getEmail(), member.getPassword(), member.getName() );
+                = new MemberDTO(member.getEmail(), member.getPassword(), member.getName(), member.isSocial() );
         return memberDTO;
     }
 }

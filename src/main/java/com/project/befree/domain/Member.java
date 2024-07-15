@@ -21,6 +21,8 @@ public class Member {
     private String email;
     private String password;
     private String name;
+    @Builder.Default
+    private boolean social = false;
 
     public void changePassword(String password) {
         this.password = password;
