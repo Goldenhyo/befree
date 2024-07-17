@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    container_name: befreedb
+    container_name: befreejenkinsdb
     image: mysql:8.0
     restart: unless-stopped
     environment:
