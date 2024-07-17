@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: 1234
     ports:
-      - "3306:3306"
+      - "3307:3307"
     networks:
       - test_network
 
@@ -21,7 +21,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://befreedb:3306/befree?useUnicode=true&characterEncoding=UTF-8&characterSetResult=UTF8&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://befreedb:3307/befree?useUnicode=true&characterEncoding=UTF-8&characterSetResult=UTF8&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "1234"
     depends_on:
