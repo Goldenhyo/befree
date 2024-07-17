@@ -2,6 +2,7 @@ pipeline {
     agent any 
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        REACT_TRIGGER_URL = 'http://3.36.84.228:8080/job/befree/build?token=react-trigger-token'
     }
     stages {
         stage('Checkout') {
@@ -22,6 +23,14 @@ pipeline {
             steps {
                 // Docker Compose를 사용하여 배포
                 sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
+            }
+        }
+        stage('Trigger React Build') {
+            steps {
+                script {
+                    // React 프로젝트 빌드를 트리거하는 Webhook 호출
+                    sh "curl -X POST ${REACT_TRIGGER_URL}"
+                }
             }
         }
     }
