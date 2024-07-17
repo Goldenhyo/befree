@@ -14,7 +14,7 @@ pipeline {
             steps {
                 // Docker 이미지를 빌드
                 script {
-                    docker.build("befreejenkinsapi", "-f dockerfile.springboot .")
+                    docker.build("befreejenkinsapi", "-f dockerfile .")
                 }
             }
         }
