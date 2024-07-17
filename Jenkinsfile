@@ -22,7 +22,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Docker Compose를 사용하여 배포
-                sh "docker compose -f ${DOCKER_COMPOSE_FILE} up -d"
+                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
             }
         }
         stage('Trigger React Build') {
